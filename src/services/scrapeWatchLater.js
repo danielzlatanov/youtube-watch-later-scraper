@@ -133,5 +133,17 @@ function secondsToDuration(seconds) {
 		});
 		column.width = maxLength + 2;
 	});
+
+	const now = new Date();
+	const date = `${String(now.getDate()).padStart(2, '0')}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(
+		now.getFullYear()
+	).slice(-2)}`;
+	const time = now.toTimeString().slice(0, 5).replace(':', '-');
+	const filePath = path.join(__dirname, '../../output', `scrapeWatchLater_sorted_${date}_${time}.xlsx`);
+
+	await workbook.xlsx.writeFile(filePath);
+
+	progressBar.update(100);
+	progressBar.stop();
 	await browser.close();
 })();
