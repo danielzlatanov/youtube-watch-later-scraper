@@ -7,6 +7,18 @@ const cliProgress = require('cli-progress');
 
 puppeteer.use(StealthPlugin());
 
+function durationToSeconds(duration) {
+	const parts = duration.split(':').map(Number);
+	return parts.length === 3 ? parts[0] * 3600 + parts[1] * 60 + parts[2] : parts[0] * 60 + parts[1];
+}
+
+function secondsToDuration(seconds) {
+	const hours = Math.floor(seconds / 3600);
+	const minutes = Math.floor((seconds % 3600) / 60);
+	const secs = seconds % 60;
+	return [hours, minutes, secs].map(val => String(val).padStart(2, '0')).join(':');
+}
+
 (async () => {
 	const browser = await puppeteer.launch({
 		headless: false,
