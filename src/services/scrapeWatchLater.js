@@ -79,5 +79,20 @@ function secondsToDuration(seconds) {
 			};
 		});
 	});
+	const sortedVideos = videos
+		.map(video => ({
+			...video,
+			durationInSeconds: durationToSeconds(video.duration),
+		}))
+		.filter(video => !isNaN(video.durationInSeconds))
+		.sort((a, b) => a.durationInSeconds - b.durationInSeconds)
+		.map(video => ({
+			title: video.title,
+			duration: secondsToDuration(video.durationInSeconds),
+			url: video.url,
+		}));
+
+	progressBar.update(95);
+
 	await browser.close();
 })();
