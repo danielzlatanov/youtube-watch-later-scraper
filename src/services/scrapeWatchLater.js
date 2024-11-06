@@ -94,5 +94,44 @@ function secondsToDuration(seconds) {
 
 	progressBar.update(95);
 
+	const workbook = new ExcelJS.Workbook();
+	const worksheet = workbook.addWorksheet('Videos');
+
+	const headerRow = worksheet.addRow(['Title', 'Duration']);
+	headerRow.getCell(1).font = { bold: true, size: 13, color: { argb: 'FFFFFF' } };
+	headerRow.getCell(1).alignment = { vertical: 'middle', horizontal: 'center' };
+	headerRow.getCell(1).fill = {
+		type: 'pattern',
+		pattern: 'solid',
+		fgColor: { argb: '008000' },
+	};
+	headerRow.getCell(2).font = { bold: true, size: 13, color: { argb: 'FFFFFF' } };
+	headerRow.getCell(2).alignment = { vertical: 'middle', horizontal: 'center' };
+	headerRow.getCell(2).fill = {
+		type: 'pattern',
+		pattern: 'solid',
+		fgColor: { argb: '008000' },
+	};
+
+	sortedVideos.forEach(video => {
+		const row = worksheet.addRow([video.title, video.duration]);
+		row.getCell(1).font = { bold: false };
+		row.getCell(2).font = { bold: false };
+		row.getCell(1).value = { text: video.title, hyperlink: `https://www.youtube.com${video.url}` };
+	});
+
+	worksheet.columns.forEach(column => {
+		let maxLength = 0;
+		column.eachCell({ includeEmpty: false }, cell => {
+			let cellLength =
+				typeof cell.value === 'object' && cell.value.text
+					? cell.value.text.length
+					: cell.value
+					? cell.value.toString().length
+					: 10;
+			if (cellLength > maxLength) maxLength = cellLength;
+		});
+		column.width = maxLength + 2;
+	});
 	await browser.close();
 })();
