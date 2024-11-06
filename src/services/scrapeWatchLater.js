@@ -41,5 +41,29 @@ function secondsToDuration(seconds) {
 	console.log('AUTOMATION PAUSED: Log in manually in the browser, then press Enter in the terminal.');
 
 	await new Promise(resolve => process.stdin.once('data', resolve));
+
+	await initPage.goto('https://www.youtube.com/playlist?list=WL', { waitUntil: 'networkidle2' });
+
+	const progressBar = new cliProgress.SingleBar(
+		{
+			format: ' {bar} {percentage}% | ETA: {eta}s ',
+		},
+		cliProgress.Presets.shades_classic
+	);
+	progressBar.start(100, 10);
+
+	let previousHeight;
+	let scrollProgress = 10;
+
+	do {
+		previousHeight = await initPage.evaluate('document.documentElement.scrollHeight');
+		await initPage.evaluate('window.scrollTo(0, document.documentElement.scrollHeight)');
+		await new Promise(resolve => setTimeout(resolve, 2000));
+
+		scrollProgress = Math.min(scrollProgress + 5, 80);
+		progressBar.update(scrollProgress);
+	} while (previousHeight !== (await initPage.evaluate('document.documentElement.scrollHeight')));
+
+	progressBar.update(90);
 	await browser.close();
 })();
