@@ -65,5 +65,19 @@ function secondsToDuration(seconds) {
 	} while (previousHeight !== (await initPage.evaluate('document.documentElement.scrollHeight')));
 
 	progressBar.update(90);
+
+	const videos = await initPage.evaluate(() => {
+		const videoElements = Array.from(document.querySelectorAll('ytd-playlist-video-renderer'));
+		return videoElements.map(video => {
+			const titleElement = video.querySelector('#video-title');
+			const durationElement = video.querySelector('.badge-shape-wiz__text');
+
+			return {
+				title: titleElement ? titleElement.textContent.trim() : 'Unknown Title',
+				duration: durationElement ? durationElement.textContent.trim() : '00:00',
+				url: titleElement ? titleElement.getAttribute('href') : '',
+			};
+		});
+	});
 	await browser.close();
 })();
