@@ -42,6 +42,8 @@ function secondsToDuration(seconds) {
 
 	await new Promise(resolve => process.stdin.once('data', resolve));
 
+	console.time('actual automation time');
+
 	await initPage.goto('https://www.youtube.com/playlist?list=WL', { waitUntil: 'networkidle2' });
 
 	const progressBar = new cliProgress.SingleBar(
@@ -79,6 +81,9 @@ function secondsToDuration(seconds) {
 			};
 		});
 	});
+
+	const totalVideos = videos.length;
+
 	const sortedVideos = videos
 		.map(video => ({
 			...video,
@@ -145,5 +150,11 @@ function secondsToDuration(seconds) {
 
 	progressBar.update(100);
 	progressBar.stop();
+
+	console.log(`total extracted videos: ${totalVideos}`);
+	console.log('excel file created:', filePath);
+
+	console.timeEnd('actual automation time');
+
 	await browser.close();
 })();
