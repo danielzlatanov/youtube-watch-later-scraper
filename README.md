@@ -37,8 +37,13 @@ _You can stop or exit the script at any time by pressing **`Ctrl + C`** in the t
 
 After the progress bar finishes, the script will log the total extracted videos and the location of the output file.
 
-The **.xlsx** file will be saved in the output folder in the root directory as **scrapeWatchLater_sorted_{date}_{time}.xlsx**.
+The **.xlsx** file will be saved in the output folder in the root directory as **scrapeWatchLater_sorted_{date}_{time}.xlsx**
 
 7. **View the File**
 
 Open the sorted & styled Excel file with Google Sheets or Microsoft Excel and enjoy!
+
+## 📽️ Demo
+
+https://github.com/user-attachments/assets/c05fdbc8-bf1f-4dd1-baab-af29c356d998
+
