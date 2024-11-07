@@ -1,5 +1,11 @@
-# youtube-watch-later-scraper
-scrape your watch later playlist in seconds for easy sorting and organization
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/c97954ef-9cb1-4e25-8652-1cb9f92872b6" alt="yt-wl-scraper-logo" width="300" />
+</div>
+
+<div align="center">
+  <h1>youtube watch later scraper</h1>
+  <p>scrape your watch later playlist in seconds for easy sorting and organization</p>
+</div>
 
 ## 📖 Quick Guide
 
