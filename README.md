@@ -17,8 +17,7 @@ scrape your watch later playlist in seconds for easy sorting and organization
    ```bash
    npm start
 
-  This will launch Puppeteer in headless
-  mode and navigate to YouTube.
+  This will launch Chromium in visible (non-headless) mode and navigate to YouTube.
 
 4. **YouTube Manual Login**
 
@@ -29,6 +28,10 @@ Press **Enter** to continue the automation script.
 5. **Progress Tracking**
 
 You can track the progress in the terminal as the script scrolls through your YouTube playlist. This is optional, but the terminal log will show updates, and it’s not really necessary to watch the loading process on YouTube.
+
+##### **_Stopping the Script_**
+
+_You can stop or exit the script at any time by pressing **`Ctrl + C`** in the terminal._
 
 6. **Final Output**
 
