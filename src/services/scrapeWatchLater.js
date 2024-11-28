@@ -111,6 +111,8 @@ function secondsToDuration(seconds) {
 	const workbook = new ExcelJS.Workbook();
 	const worksheet = workbook.addWorksheet('Videos');
 
+	worksheet.views = [{ state: 'frozen', ySplit: 1 }];
+
 	const headerRow = worksheet.addRow(['channel', 'title', 'duration', 'views', 'uploaded']);
 	headerRow.eachCell((cell, colNumber) => {
 		cell.font = { bold: true, size: 13, color: { argb: 'FFFFFF' } };
