@@ -73,11 +73,17 @@ function secondsToDuration(seconds) {
 		return videoElements.map(video => {
 			const titleElement = video.querySelector('#video-title');
 			const durationElement = video.querySelector('.badge-shape-wiz__text');
+			const channelElement = video.querySelector('a.yt-simple-endpoint.style-scope.yt-formatted-string');
+			const viewsElement = video.querySelector('#video-info span:nth-child(1)');
+			const uploadDateElement = video.querySelector('#video-info span:nth-child(3)');
 
 			return {
-				title: titleElement ? titleElement.textContent.trim() : 'Unknown Title',
-				duration: durationElement ? durationElement.textContent.trim() : '00:00',
+				title: titleElement ? titleElement.textContent.trim() : 'unknown title',
+				duration: durationElement ? durationElement.textContent.trim() : 'unknown duration',
 				url: titleElement ? titleElement.getAttribute('href') : '',
+				channel: channelElement ? channelElement.textContent.trim() : 'unknown channel',
+				views: viewsElement ? viewsElement.textContent.trim() : 'unknown views',
+				timeUploaded: uploadDateElement ? uploadDateElement.textContent.trim() : 'unknown upload',
 			};
 		});
 	});
@@ -92,8 +98,11 @@ function secondsToDuration(seconds) {
 		.filter(video => !isNaN(video.durationInSeconds))
 		.sort((a, b) => a.durationInSeconds - b.durationInSeconds)
 		.map(video => ({
+			channel: video.channel,
 			title: video.title,
 			duration: secondsToDuration(video.durationInSeconds),
+			views: video.views,
+			timeUploaded: video.timeUploaded,
 			url: video.url,
 		}));
 
@@ -102,27 +111,24 @@ function secondsToDuration(seconds) {
 	const workbook = new ExcelJS.Workbook();
 	const worksheet = workbook.addWorksheet('Videos');
 
-	const headerRow = worksheet.addRow(['Title', 'Duration']);
-	headerRow.getCell(1).font = { bold: true, size: 13, color: { argb: 'FFFFFF' } };
-	headerRow.getCell(1).alignment = { vertical: 'middle', horizontal: 'center' };
-	headerRow.getCell(1).fill = {
-		type: 'pattern',
-		pattern: 'solid',
-		fgColor: { argb: '008000' },
-	};
-	headerRow.getCell(2).font = { bold: true, size: 13, color: { argb: 'FFFFFF' } };
-	headerRow.getCell(2).alignment = { vertical: 'middle', horizontal: 'center' };
-	headerRow.getCell(2).fill = {
-		type: 'pattern',
-		pattern: 'solid',
-		fgColor: { argb: '008000' },
-	};
+	const headerRow = worksheet.addRow(['channel', 'title', 'duration', 'views', 'uploaded']);
+	headerRow.eachCell((cell, colNumber) => {
+		cell.font = { bold: true, size: 13, color: { argb: 'FFFFFF' } };
+		cell.alignment = { vertical: 'middle', horizontal: 'left' };
+		cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '008000' } };
+	});
 
 	sortedVideos.forEach(video => {
-		const row = worksheet.addRow([video.title, video.duration]);
-		row.getCell(1).font = { bold: false };
-		row.getCell(2).font = { bold: false };
-		row.getCell(1).value = { text: video.title, hyperlink: `https://www.youtube.com${video.url}` };
+		const row = worksheet.addRow([
+			video.channel,
+			{ text: video.title, hyperlink: `https://www.youtube.com${video.url}` },
+			video.duration,
+			video.views,
+			video.timeUploaded,
+		]);
+
+		const titleCell = row.getCell(2);
+		titleCell.font = { color: { argb: '800080' }, underline: true };
 	});
 
 	worksheet.columns.forEach(column => {
@@ -136,7 +142,7 @@ function secondsToDuration(seconds) {
 					: 10;
 			if (cellLength > maxLength) maxLength = cellLength;
 		});
-		column.width = maxLength + 2;
+		column.width = maxLength + 1;
 	});
 
 	const now = new Date();
@@ -144,7 +150,7 @@ function secondsToDuration(seconds) {
 		now.getFullYear()
 	).slice(-2)}`;
 	const time = now.toTimeString().slice(0, 5).replace(':', '-');
-	const filePath = path.join(__dirname, '../../output', `scrapeWatchLater_sorted_${date}_${time}.xlsx`);
+	const filePath = path.join(__dirname, '../../output', `scrapeWatchLater_sorted_${date}_${time}_EET.xlsx`);
 
 	await workbook.xlsx.writeFile(filePath);
 
